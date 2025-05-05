@@ -20,19 +20,19 @@ echo "legion:password" | chpasswd && \
 usermod -aG wheel legion
 
 USER legion
-RUN mkdir /home/legion/neovim
+# RUN mkdir /home/legion/neovim
+RUN mkdir /home/legion/neovim -p ~/.local/share/nvim/site/pack ~/dotfiles ~/.config
 COPY ./nvim-linux64.tar.gz /home/legion/neovim/nvim-linux64.tar.gz
 COPY ./linker.sh /home/legion/neovim/linker.sh
-# RUN chown legion /home/legion/neovim/*
+COPY ./nvim /home/legion/dotfiles/nvim
+COPY ./plugins.tar.gz /home/legion/.local/share/nvim/site/
 RUN cd ~/neovim && tar -xf ./nvim-linux64.tar.gz nvim-linux64
-RUN mkdir -p ~/.local/share/nvim/site/ ~/dotfiles ~/.config
 COPY ./st.tar.gz /home/legion/st.tar.gz
 RUN cd ~ && tar -xf ./st.tar.gz st
 
 USER root
-COPY ./plugins.tar.gz /home/legion/.local/share/nvim/site/
-RUN tar -xvf /home/legion/.local/share/nvim/site/plugins.tar.gz -C /home/legion/.local/share/nvim/site/
-COPY ./nvim /home/legion/dotfiles/nvim
+RUN tar -xf /home/legion/.local/share/nvim/site/plugins.tar.gz -C /home/legion/.local/share/nvim/site/
+RUN mv /home/legion/.local/share/nvim/site/plugins/* /home/legion/.local/share/nvim/site/pack/
 RUN ln -s /home/legion/neovim/nvim-linux64/bin/nvim /bin && \
 ln -s /home/legion/dotfiles/nvim /home/legion/.config/nvim
 
